@@ -10,7 +10,9 @@ const STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
 export default function OrderStatusSelect({ orderId, currentStatus }: { orderId: string, currentStatus: string }) {
   const [loading, setLoading] = useState(false)
 
-  async function handleStatusChange(newStatus: string) {
+  async function handleStatusChange(newStatus: string | null) {
+    if (!newStatus) return;
+
     setLoading(true)
     const res = await updateOrderStatus(orderId, newStatus)
     setLoading(false)
