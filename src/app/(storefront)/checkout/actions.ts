@@ -21,11 +21,13 @@ export async function placeOrder(formData: FormData, cartItems: any[], subtotal:
   }
 
   const total_amount = subtotal + shipping
+  const order_number = `ORD-${Math.floor(100000 + Math.random() * 900000)}`
 
   // 1. Create the order
   const { data: order, error: orderError } = await supabase
     .from('orders')
     .insert([{
+      order_number,
       customer_name,
       customer_email,
       customer_phone,

@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import DeleteProductButton from './DeleteProductButton'
+import MarkSoldButton from './MarkSoldButton'
 import { Plus } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
@@ -75,7 +76,10 @@ export default async function ProductsPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-2">
-                        {/* Edit button could go here, for now just Delete */}
+                        <MarkSoldButton id={product.id} stock={product.stock_quantity} />
+                        <Link href={`/admin/products/edit/${product.id}`}>
+                          <Button variant="outline" size="sm">Edit</Button>
+                        </Link>
                         <DeleteProductButton id={product.id} />
                       </div>
                     </TableCell>

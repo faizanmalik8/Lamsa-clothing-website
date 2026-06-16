@@ -77,7 +77,7 @@ export default async function ProductDetailsPage({ params }: { params: { slug: s
               <AddToCartButton product={product} />
             ) : (
               <button disabled className="w-full bg-charcoal/10 text-charcoal/50 uppercase tracking-widest font-medium py-4">
-                Out of Stock
+                Sold Out
               </button>
             )}
           </div>

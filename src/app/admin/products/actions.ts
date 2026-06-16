@@ -95,3 +95,82 @@ export async function deleteProduct(id: string) {
   revalidatePath('/', 'layout')
   return { success: true }
 }
+
+export async function editProduct(id: string, formData: FormData) {
+  const supabase = await createClient()
+  
+  const name = formData.get('name') as string
+  const category_id = formData.get('category_id') as string
+  const description = formData.get('description') as string
+  const price = parseFloat(formData.get('price') as string)
+  const compare_at_price = formData.get('compare_at_price') ? parseFloat(formData.get('compare_at_price') as string) : null
+  const stock_quantity = parseInt(formData.get('stock_quantity') as string)
+  const is_active = formData.get('is_active') === 'on'
+  const is_featured = formData.get('is_featured') === 'on'
+  
+  if (!name || !category_id || isNaN(price)) return { error: 'Name, Category, and Price are required' }
+
+  // Update product
+  const { error: dbError } = await supabase
+    .from('products')
+    .update({
+      category_id,
+      name,
+      description,
+      price,
+      compare_at_price,
+      stock_quantity,
+      is_active,
+      is_featured
+    })
+    .eq('id', id)
+
+  if (dbError) return { error: dbError.message }
+
+  // Handle optional new images
+  const images = formData.getAll('images') as File[]
+  for (let i = 0; i < images.length; i++) {
+    const file = images[i]
+    if (file.size > 0) {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${id}-${Date.now()}-${i}-${Math.random()}.${fileExt}`
+      
+      const { error: uploadError } = await supabase.storage
+        .from('products')
+        .upload(fileName, file)
+
+      if (!uploadError) {
+        const { data: publicUrlData } = supabase.storage
+          .from('products')
+          .getPublicUrl(fileName)
+
+        await supabase
+          .from('images')
+          .insert([{
+            product_id: id,
+            image_url: publicUrlData.publicUrl,
+            display_order: 99 + i // Add to end
+          }])
+      }
+    }
+  }
+
+  revalidatePath('/admin/products')
+  revalidatePath('/', 'layout')
+  return { success: true }
+}
+
+export async function markProductSold(id: string) {
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('products')
+    .update({ stock_quantity: 0 })
+    .eq('id', id)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/admin/products')
+  revalidatePath('/', 'layout')
+  return { success: true }
+}

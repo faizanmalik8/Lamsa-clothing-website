@@ -19,11 +19,15 @@ export default function ProductCard({ product }: { product: any }) {
             Lamsa
           </div>
         )}
-        {product.compare_at_price && product.compare_at_price > product.price && (
-          <div className="absolute top-2 left-2 bg-charcoal text-beige text-xs uppercase tracking-widest px-2 py-1 font-semibold">
+        {product.stock_quantity === 0 ? (
+          <div className="absolute top-2 left-2 bg-red-600 text-white text-xs uppercase tracking-widest px-2 py-1 font-semibold z-10">
+            Sold Out
+          </div>
+        ) : product.compare_at_price && product.compare_at_price > product.price ? (
+          <div className="absolute top-2 left-2 bg-charcoal text-beige text-xs uppercase tracking-widest px-2 py-1 font-semibold z-10">
             Sale
           </div>
-        )}
+        ) : null}
       </Link>
       <div className="p-4 flex flex-col flex-1">
         <div className="text-[10px] sm:text-xs text-gold uppercase tracking-widest mb-1 font-medium">

@@ -113,7 +113,7 @@ export default function SettingsForm({ initialData }: { initialData: any }) {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center space-x-2">
-              <Switch id="is_announcement_active" name="is_announcement_active" defaultChecked={initialData?.is_announcement_active} />
+              <Switch id="is_announcement_active" name="is_announcement_active" defaultChecked={!!initialData?.is_announcement_active} />
               <Label htmlFor="is_announcement_active">Enable Announcement Bar</Label>
             </div>
             <div className="space-y-2">
