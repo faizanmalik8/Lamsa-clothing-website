@@ -1,9 +1,9 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 
 export async function placeOrder(formData: FormData, cartItems: any[], subtotal: number, shipping: number) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   // Parse form data
   const customer_name = formData.get('customer_name') as string
